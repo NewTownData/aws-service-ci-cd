@@ -1,0 +1,15 @@
+{
+  "name": "service",
+  "version": "1.0.0",
+  "description": "Example web service",
+  "main": "index.js",
+  "scripts": {
+    "start": "node -r dotenv/config index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "New Town Data Ltd, https://newtowndata.com/",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  }
+}
