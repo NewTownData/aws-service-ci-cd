@@ -1,10 +1,24 @@
 version: '3'
 
 services:
+  cdk:
+    build:
+      context: cdk
+      args:
+        - BUILD_VERSION=docker-build
+    environment:
+      - DEPLOYMENT_VERSION=docker-compose
+      - DEPLOYMENT_ENVIRONMENT=Development
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
   service:
-    build: service
+    build:
+      context: service
+      args:
+        - BUILD_VERSION=docker-build
     ports:
       - "8080:8080"
     environment:
-      - BUILD_VERSION=docker
-      - DEPLOYMENT_VERSION=docker
+      - DEPLOYMENT_VERSION=docker-compose
+

@@ -1,6 +1,6 @@
 const http = require('http');
 
-const message = `Code Version: 1.0.0
+const message = `Code Version: 1.0.1
 Build Version: ${process.env.BUILD_VERSION}
 Deployment Version: ${process.env.DEPLOYMENT_VERSION}
 `;

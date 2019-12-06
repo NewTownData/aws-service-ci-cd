@@ -1,0 +1,60 @@
+def cdkRepositoryName = 'aws-service-ci-cd/cdk'
+
+pipeline {
+  // no agent selected, so the pipeline can wait for user input
+  agent none
+
+  parameters {
+    string(name: 'BUILD_VERSION', defaultValue: 'latest', description: 'Build Version to be deployed')
+  }
+
+  options { 
+    disableConcurrentBuilds() 
+  }
+
+  environment {
+    BUILD_VERSION = "${params.BUILD_VERSION}"
+    DEPLOYMENT_VERSION = "${params.BUILD_VERSION}-deploy-${env.BUILD_NUMBER}"
+    AWS_ACCESS_KEY_ID = credentials('jenkins-aws-secret-key-id')
+    AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
+  }
+  
+  stages {
+    stage('Deploy to Acceptance') {
+      agent any
+      environment {
+        DEPLOYMENT_ENVIRONMENT = 'Acceptance'
+      }
+      steps {
+        sh "aws ecr get-login --no-include-email --region ${env.AWS_REGION} | bash"
+        sh "docker run -e BUILD_VERSION -e DEPLOYMENT_ENVIRONMENT -e DEPLOYMENT_VERSION -e AWS_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY ${env.ECR_REPOSITORY}/${cdkRepositoryName}:${env.BUILD_VERSION}"
+      }
+    }
+    stage('Verify Acceptance') {
+      agent none
+      steps {
+        timeout(time: 2, unit: 'HOURS') {
+          input message: 'Approve Deployment to Production?', ok: 'Yes'
+        }
+      }
+    }
+    stage('Deploy to Production') {
+      agent any
+      environment {
+        DEPLOYMENT_ENVIRONMENT = 'Production'
+      }
+      steps {
+        sh "aws ecr get-login --no-include-email --region ${env.AWS_REGION} | bash"
+        sh "docker run -e BUILD_VERSION -e DEPLOYMENT_ENVIRONMENT -e DEPLOYMENT_VERSION -e AWS_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY ${env.ECR_REPOSITORY}/${cdkRepositoryName}:${env.BUILD_VERSION}"
+      }
+    }
+  }
+
+  post {
+    cleanup {
+      node(null) { // to select any agent
+        cleanWs()
+      }
+    }
+  }
+}
