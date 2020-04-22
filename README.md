@@ -44,4 +44,4 @@ The service is deployed to AWS ECS cluster as a Fargate task via AWS CDK. See `c
 
 Apache License, Version 2.0. See [LICENSE.txt](LICENSE.txt) for more details.
 
-Copyright 2019 New Town Data Ltd, https://newtowndata.com/
+Copyright 2020 New Town Data Ltd, https://www.newtowndata.com/
