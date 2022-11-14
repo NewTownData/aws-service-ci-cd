@@ -1,5 +1,11 @@
 # AWS Service
 
+## ⚠️ Important Message ⚠️
+
+> As of 2022-11-14 this project is no longer maintained. If you plan to build your project based on this code, please, make sure it contains safe dependencies and that it is up-to-date with the latest best security practices.
+
+## Description
+
 An example AWS service build using Jenkins pipeline.
 
 The service is packaged as a Docker image and published to AWS ECR repository. See `service` folder.
